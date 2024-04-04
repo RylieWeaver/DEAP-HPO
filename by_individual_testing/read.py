@@ -28,7 +28,7 @@ def inspect_pickle(filename):
 if __name__ == "__main__":
 
     # The path to your pickle file
-    pickle_file_path = 'checkpoint.pkl'
+    pickle_file_path = 'checkpoint_0.pkl'
     
     # Load the checkpoint file
     loaded_data = load_from_pickle(pickle_file_path)

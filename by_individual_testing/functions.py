@@ -25,8 +25,8 @@ def get_data():
     y_test = tf.keras.utils.to_categorical(y_test, 10)
 
     # Subset Data
-    num_train_samples = 4000
-    num_test_samples = 1000
+    num_train_samples = 10000
+    num_test_samples = 2500
 
     x_train = x_train[:num_train_samples]
     y_train = y_train[:num_train_samples]
@@ -37,7 +37,7 @@ def get_data():
     return x_train, y_train, x_test, y_test
 
 
-def save_checkpoint(population, filename="checkpoint.pkl", generation=0, offspring=None, ):
+def save_checkpoint(population, filename="checkpoint.pkl", generation=None, offspring=None, ):
     """
     Save the state of the evolutionary algorithm to a checkpoint file. Can save the entire population or individual evaluations.
 
@@ -86,7 +86,7 @@ def load_checkpoint(filename="checkpoint.pkl"):
 def evaluate(individual):
     # Unpack individual's genes (hyperparameters)
     # print(individual)
-    n_neurons, dropout_rate = individual
+    n_neurons, dropout_rate, id = individual
 
     # Build neural network model
     model = Sequential([
@@ -111,7 +111,7 @@ def evaluate(individual):
 
     # Evaluate model
     score = model.evaluate(x_test, y_test, verbose=0)
-    return (score[1],)  # Return accuracy as fitness
+    return score[1],  # Return accuracy as fitness
 
 
 def customMutate(individual, mu=0, sigma=1, indpb=0.8):
@@ -135,8 +135,8 @@ def customMutate(individual, mu=0, sigma=1, indpb=0.8):
                 individual[i] = max(1, min(individual[i], 1000))
             elif i == 1:  # Assuming the second gene is the dropout rate
                 individual[i] += random.gauss(mu, sigma)
-                # Ensure the dropout rate stays within [0, 0.8]
-                individual[i] = max(0, min(individual[i], 0.8))
+                # Ensure the dropout rate stays within [0, 1]
+                individual[i] = max(0, min(individual[i], 1))
             elif i == 2:
                 pass
     return individual,
